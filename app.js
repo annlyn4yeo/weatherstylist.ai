@@ -1,6 +1,11 @@
 import { getCoords } from "./js/getLocation.js";
 import { getWeatherData } from "./js/weather.js";
-import { getMomentText, setLoadingState, setErrorState } from "./js/uiUtils.js";
+import {
+  getMomentText,
+  setLoadingState,
+  setErrorState,
+  setRefreshIndicatorEmoji,
+} from "./js/uiUtils.js";
 
 // --- DOM Elements ---
 const adviceHeadingEl = document.getElementById("ai-advice-heading");
@@ -42,6 +47,15 @@ async function getAIAdvice(tempAdjustment = 0) {
   const { askGemini } = await import("./js/brain.js");
   if (!currentWeather) return;
 
+  // Show loading state while AI is thinking
+  setLoadingState(
+    adviceHeadingEl,
+    adviceBodyEl,
+    refreshIndicatorEl,
+    "Getting your fit...",
+    "The AI is thinking..."
+  );
+
   const adjustedTemp =
     Math.round(currentWeather.current.main.temp) + tempAdjustment;
 
@@ -50,11 +64,9 @@ async function getAIAdvice(tempAdjustment = 0) {
 
   if (cachedAdvice) {
     adviceBodyEl.textContent = cachedAdvice;
+    setRefreshIndicatorEmoji(currentWeather);
     return;
   }
-
-  adviceHeadingEl.textContent = "Getting your fit...";
-  adviceBodyEl.textContent = "The AI is thinking...";
 
   try {
     const advice = await askGemini(currentWeather, activeVibe, tempAdjustment);
@@ -62,9 +74,10 @@ async function getAIAdvice(tempAdjustment = 0) {
     sessionStorage.setItem(cacheKey, advice);
   } catch (err) {
     console.error(err);
-    adviceBodyEl.textContent = "Could not fetch advice.";
+    setErrorState(adviceHeadingEl, adviceBodyEl, refreshIndicatorEl);
   } finally {
     adviceHeadingEl.textContent = "AI Weather Stylist";
+    setRefreshIndicatorEmoji(currentWeather);
   }
 }
 
@@ -86,15 +99,7 @@ function updateUI(weather) {
   heroLabelEl.textContent = `Feels Like ${Math.round(
     weather.current.main.feels_like
   )}°`;
-
-  // Update refresh indicator with an emoji based on feels_like
-  const fl = weather.current.main.feels_like;
-  let emoji = "😊";
-  if (fl < 5) emoji = "🥶";
-  else if (fl < 15) emoji = "🧥";
-  else if (fl < 28) emoji = "😎";
-  else emoji = "🔥";
-  refreshIndicatorEl.textContent = emoji;
+  setRefreshIndicatorEmoji(weather);
 }
 
 const CACHE_DURATION_MS = 60 * 60 * 1000; // 1 hour

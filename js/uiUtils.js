@@ -9,6 +9,17 @@ export function getMomentText(threeHourForecast) {
   return "No forecast available.";
 }
 
+export function setRefreshIndicatorEmoji(weather) {
+  const refreshIndicatorEl = document.getElementById("refresh-indicator");
+  const fl = weather.current.main.feels_like;
+  let emoji = "😊";
+  if (fl < 5) emoji = "🥶";
+  else if (fl < 15) emoji = "🧥";
+  else if (fl < 28) emoji = "😎";
+  else emoji = "🔥";
+  refreshIndicatorEl.textContent = emoji;
+}
+
 export function setLoadingState(
   adviceHeadingEl,
   adviceBodyEl,
