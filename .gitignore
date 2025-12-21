@@ -1,5 +1,6 @@
 # Ignore the file containing my private keys
 js/config.js
+/agent_instructions.md
 
 # Ignore OS files
 .DS_Store

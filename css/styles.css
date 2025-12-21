@@ -1,44 +1,285 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap");
+
 :root {
-  --primary: #2563eb;
-  --bg: #f8fafc;
-  --card: #ffffff;
+  /* Glassmorphism Theme */
+  --glass-bg: rgba(255, 255, 255, 0.1);
+  --glass-border: rgba(255, 255, 255, 0.2);
+  --text-main: #ffffff;
+  --text-muted: rgba(255, 255, 255, 0.7);
+  --accent: #a5b4fc;
+  --font-stack: "Inter", system-ui, sans-serif;
+  --radius: 24px;
 }
 
 body {
-  font-family: "Inter", sans-serif;
-  background-color: var(--bg);
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  margin: 0;
   min-height: 100vh;
+  background: linear-gradient(135deg, #0f172a 0%, #312e81 100%);
+  font-family: var(--font-stack);
+  color: var(--text-main);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  box-sizing: border-box;
+}
+
+/* Typography Hierarchy */
+#current-temp {
+  font-size: 6rem;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -3px;
+  background: linear-gradient(to bottom, #fff, #c7d2fe);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+#weather-desc {
+  font-size: 1.5rem;
+  font-weight: 300;
+  text-transform: capitalize;
+  color: var(--text-muted);
+}
+
+#ai-advice-heading {
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  color: var(--accent);
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+#ai-advice-body {
+  font-size: 1.25rem;
+  line-height: 1.6;
+  max-width: 600px;
+}
+
+/* Micro-Moment Pill */
+#moment-text {
+  display: inline-block;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  padding: 0.5rem 1rem;
+  border-radius: 50px;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  backdrop-filter: blur(5px);
+}
+
+/* Interactive Elements */
+.vibe-btn {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  color: var(--text-main);
+  padding: 0.75rem 1.5rem;
+  border-radius: 50px;
+  font-family: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.vibe-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+}
+
+.vibe-btn.active {
+  background: var(--text-main);
+  color: #0f172a;
+  border-color: var(--text-main);
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+}
+
+/* Data Labels */
+#hum-val,
+#wind-val {
+  font-weight: 700;
+  color: var(--accent);
+}
+
+/* --- New Dashboard Layout Styles --- */
+
+.dashboard-wrapper {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 1.5rem;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  text-align: left;
+}
+
+/* Sidebar */
+.app-sidebar {
+  grid-row: 1 / span 2;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.logo-area {
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: -1px;
+  color: var(--text-main);
+}
+
+.vibe-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.vibe-nav .vibe-btn {
+  width: 100%;
+  text-align: left;
   margin: 0;
 }
 
-.weather-card {
-  background: var(--card);
-  padding: 2rem;
-  border-radius: 1.5rem;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+.location-search input {
   width: 100%;
-  max-width: 400px;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--glass-border);
+  padding: 1rem;
+  border-radius: 12px;
+  color: var(--text-main);
+  font-family: inherit;
+  box-sizing: border-box;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+.location-search input:focus {
+  border-color: var(--accent);
+}
+
+/* Main Content Area */
+.bento-container {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 1.5rem;
+}
+
+.bento-item {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.hero-card {
+  justify-content: space-between;
+  min-height: 300px;
+}
+
+.hero-card header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.label {
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 2px;
+  color: var(--text-muted);
+}
+
+#refresh-indicator {
+  font-size: 1.75rem;
+  cursor: pointer;
+  line-height: 1;
+  filter: drop-shadow(0 0 8px var(--accent));
+  transition: transform 0.2s ease;
+}
+
+#refresh-indicator:hover {
+  transform: scale(1.2);
+}
+
+.moment-card {
+  align-items: center;
+  justify-content: center;
   text-align: center;
 }
 
-.advice-box {
-  margin-top: 1.5rem;
-  padding: 1rem;
-  background: #eff6ff;
-  border-left: 4px solid var(--primary);
-  font-style: italic;
-  color: #1e40af;
+.moment-icon {
+  font-size: 3rem;
+  margin: 1.5rem 0;
 }
 
-button {
-  background: var(--primary);
-  color: white;
-  border: none;
-  padding: 0.8rem 1.5rem;
-  border-radius: 0.5rem;
-  cursor: pointer;
-  font-weight: 600;
+/* Data Strip */
+.data-strip {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  padding: 1.5rem 2.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.temp-display {
+  display: flex;
+  flex-direction: column;
+}
+
+#current-temp {
+  font-size: 4rem;
+}
+
+.raw-details {
+  display: flex;
+  gap: 3rem;
+  text-align: right;
+}
+
+.row {
+  display: flex;
+  flex-direction: column;
+}
+
+.row span:first-child {
+  color: var(--text-muted);
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  margin-bottom: 0.25rem;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .dashboard-wrapper {
+    grid-template-columns: 1fr;
+  }
+
+  .app-sidebar {
+    grid-row: auto;
+  }
+
+  .bento-container {
+    grid-template-columns: 1fr;
+  }
+
+  .data-strip {
+    flex-direction: column;
+    gap: 1.5rem;
+    text-align: center;
+  }
+
+  .raw-details {
+    width: 100%;
+    justify-content: space-around;
+    text-align: center;
+  }
 }

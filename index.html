@@ -6,14 +6,61 @@
     <link rel="stylesheet" href="./css/styles.css" />
   </head>
   <body>
-    <div id="app">
-      <h1>Weather Stylist</h1>
-      <button id="start-btn">Get Recommendation</button>
-      <div id="status"></div>
-      <div id="result-container">
-        <p id="weather-info"></p>
-        <p id="ai-advice"></p>
-      </div>
+    <div class="dashboard-wrapper">
+      <aside class="app-sidebar">
+        <div class="logo-area">WS.ai</div>
+        <nav class="vibe-nav">
+          <button class="vibe-btn" data-vibe="minimal">Minimal</button>
+          <button class="vibe-btn" data-vibe="business">Business</button>
+          <button class="vibe-btn" data-vibe="street">Street</button>
+        </nav>
+        <div class="location-search">
+          <input type="text" id="city-input" placeholder="Search city..." />
+        </div>
+      </aside>
+
+      <main class="bento-container">
+        <section class="bento-item hero-card">
+          <header>
+            <span id="hero-label" class="label">Thermal Fit</span>
+            <span id="refresh-indicator"></span>
+          </header>
+          <div class="content">
+            <h1 id="ai-advice-heading">
+              <span data-state="idle">AI Weather Stylist</span>
+              <span data-state="loading" hidden>Getting your fit…</span>
+              <span data-state="error" hidden>Something went wrong</span>
+            </h1>
+
+            <p id="ai-advice-body">
+              <span data-state="idle">Ready for fashion advice.</span>
+              <span data-state="loading" hidden>The AI is thinking…</span>
+              <span data-state="error" hidden>Could not fetch advice.</span>
+            </p>
+          </div>
+        </section>
+
+        <section class="bento-item moment-card">
+          <span class="label">Micro-Moment</span>
+          <div class="moment-icon">🕒</div>
+          <p id="moment-text">Analyzing the cloud windows...</p>
+        </section>
+      </main>
+
+      <section class="data-strip">
+        <div class="temp-display">
+          <span id="current-temp">--°</span>
+          <span id="weather-desc">Cloudy</span>
+        </div>
+        <div class="raw-details">
+          <div class="row">
+            <span>Humidity</span><span id="hum-val">--%</span>
+          </div>
+          <div class="row">
+            <span>Wind</span><span id="wind-val">--m/s</span>
+          </div>
+        </div>
+      </section>
     </div>
     <script type="module" src="./app.js"></script>
   </body>
