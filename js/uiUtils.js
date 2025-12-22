@@ -2,7 +2,7 @@ export function getMomentText(threeHourForecast) {
   const nextPeriod = threeHourForecast[0];
   if (nextPeriod) {
     // The API gives temp in main.temp
-    return `In 3 hours: ${nextPeriod.weather[0].description} at ${Math.round(
+    return `7 ${nextPeriod.weather[0].description} at ${Math.round(
       nextPeriod.main.temp
     )}°`;
   }
