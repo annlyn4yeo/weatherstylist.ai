@@ -5,6 +5,7 @@ import {
   setLoadingState,
   setErrorState,
   setRefreshIndicatorEmoji,
+  setUIState,
 } from "./js/uiUtils.js";
 
 // --- DOM Elements ---
@@ -44,41 +45,44 @@ refreshIndicatorEl.addEventListener("click", () => {
 });
 
 async function getAIAdvice(tempAdjustment = 0) {
-  const { askGemini } = await import("./js/brain.js");
   if (!currentWeather) return;
 
   // Show loading state while AI is thinking
-  setLoadingState(
-    adviceHeadingEl,
-    adviceBodyEl,
-    refreshIndicatorEl,
-    "Getting your fit...",
-    "The AI is thinking..."
-  );
-
+  setUIState(adviceHeadingEl, "loading");
+  setUIState(adviceBodyEl, "loading");
   const adjustedTemp =
     Math.round(currentWeather.current.main.temp) + tempAdjustment;
 
   const cacheKey = `ai-style-${currentWeather.city}-${adjustedTemp}-${activeVibe}`;
   const cachedAdvice = sessionStorage.getItem(cacheKey);
+  let adviceToDisplay = "";
 
   if (cachedAdvice) {
-    adviceBodyEl.textContent = cachedAdvice;
-    setRefreshIndicatorEmoji(currentWeather);
-    return;
+    adviceToDisplay = cachedAdvice;
+  } else {
+    try {
+      const { askGemini } = await import("./js/brain.js");
+      adviceToDisplay = await askGemini(
+        currentWeather,
+        activeVibe,
+        tempAdjustment
+      );
+      sessionStorage.setItem(cacheKey, adviceToDisplay);
+    } catch (err) {
+      console.error(err);
+      setUIState(adviceHeadingEl, "error");
+      setUIState(adviceBodyEl, "error");
+      return; // If there's an error, return after setting error state
+    }
   }
 
-  try {
-    const advice = await askGemini(currentWeather, activeVibe, tempAdjustment);
-    adviceBodyEl.textContent = advice;
-    sessionStorage.setItem(cacheKey, advice);
-  } catch (err) {
-    console.error(err);
-    setErrorState(adviceHeadingEl, adviceBodyEl, refreshIndicatorEl);
-  } finally {
-    adviceHeadingEl.textContent = "AI Weather Stylist";
-    setRefreshIndicatorEmoji(currentWeather);
-  }
+  // Common UI updates for success cases
+  const resultSlot = adviceBodyEl.querySelector('[data-state="result"]');
+  resultSlot.textContent = adviceToDisplay;
+
+  setUIState(adviceHeadingEl, "idle");
+  setUIState(adviceBodyEl, "result");
+  setRefreshIndicatorEmoji(currentWeather);
 }
 
 function updateUI(weather) {
@@ -93,8 +97,11 @@ function updateUI(weather) {
   momentTextEl.textContent = getMomentText(weather.nextSixHours);
 
   // Update hero card to be ready for AI advice
-  adviceHeadingEl.textContent = "AI Weather Stylist";
-  adviceBodyEl.textContent = `Ready for fashion advice in ${weather.city}?`;
+  const idleSlot = adviceBodyEl.querySelector('[data-state="idle"]');
+  idleSlot.textContent = `Ready for fashion advice in ${weather.city}?`;
+
+  setUIState(adviceHeadingEl, "idle");
+  setUIState(adviceBodyEl, "idle");
 
   heroLabelEl.textContent = `Feels Like ${Math.round(
     weather.current.main.feels_like
@@ -116,22 +123,11 @@ async function init() {
       }
     }
 
-    setLoadingState(
-      adviceHeadingEl,
-      adviceBodyEl,
-      refreshIndicatorEl,
-      "Locating you...",
-      "Please grant location access."
-    );
+    setUIState(adviceHeadingEl, "loading");
+    setUIState(adviceBodyEl, "loading");
     const coords = await getCoords();
-
-    setLoadingState(
-      adviceHeadingEl,
-      adviceBodyEl,
-      refreshIndicatorEl,
-      "Getting weather...",
-      `Location found: ${coords.lat.toFixed(2)}, ${coords.lon.toFixed(2)}`
-    );
+    setUIState(adviceHeadingEl, "loading");
+    setUIState(adviceBodyEl, "loading");
     const weather = await getWeatherData(coords.lat, coords.lon);
 
     // Cache the new data

@@ -6,6 +6,10 @@
     <link rel="stylesheet" href="./css/styles.css" />
   </head>
   <body>
+    <header class="app-header">
+      <h1>Personal Weather Stylist</h1>
+      <p>Your personal AI stylist for any weather, anywhere.</p>
+    </header>
     <div class="dashboard-wrapper">
       <aside class="app-sidebar">
         <div class="logo-area">WS.ai</div>
@@ -36,6 +40,7 @@
               <span data-state="idle">Ready for fashion advice.</span>
               <span data-state="loading" hidden>The AI is thinking…</span>
               <span data-state="error" hidden>Could not fetch advice.</span>
+              <span data-state="result"></span>
             </p>
           </div>
         </section>

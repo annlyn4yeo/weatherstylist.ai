@@ -18,6 +18,7 @@ export function setRefreshIndicatorEmoji(weather) {
   else if (fl < 28) emoji = "😎";
   else emoji = "🔥";
   refreshIndicatorEl.textContent = emoji;
+  refreshIndicatorEl.style.display = "block";
 }
 
 export function setLoadingState(
@@ -43,4 +44,11 @@ export function setErrorState(
   adviceHeadingEl.textContent = message;
   adviceBodyEl.textContent = body;
   refreshIndicatorEl.style.display = "none";
+}
+
+export function setUIState(container, state) {
+  const nodes = container.querySelectorAll("[data-state]");
+  for (const el of nodes) {
+    el.hidden = el.dataset.state !== state;
+  }
 }
