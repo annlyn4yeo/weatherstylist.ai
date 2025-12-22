@@ -1,5 +1,5 @@
 import { getCoords } from "./js/getLocation.js";
-import { getWeatherData } from "./js/weather.js";
+import { getWeatherData, getWeatherDataByCity } from "./js/weather.js";
 import {
   getMomentText,
   setLoadingState,
@@ -19,11 +19,33 @@ const momentTextEl = document.getElementById("moment-text");
 const refreshIndicatorEl = document.getElementById("refresh-indicator");
 const heroLabelEl = document.getElementById("hero-label");
 const vibeButtons = document.querySelectorAll(".vibe-btn");
+const cityInputElement = document.getElementById("city-input");
 
 let activeVibe = "minimal"; // Default vibe
 let currentWeather = null;
 
 // --- Event Listeners ---
+cityInputElement.addEventListener("keydown", async (event) => {
+  if (event.key === "Enter") {
+    const city = cityInputElement.value.trim();
+    if (city) {
+      try {
+        setUIState(adviceHeadingEl, "loading");
+        setUIState(adviceBodyEl, "loading");
+        const weather = await getWeatherDataByCity(city);
+        sessionStorage.setItem(
+          "weatherData",
+          JSON.stringify({ data: weather, timestamp: Date.now() })
+        );
+        updateUI(weather);
+        cityInputElement.value = "";
+      } catch (err) {
+        setErrorState(adviceHeadingEl, adviceBodyEl, refreshIndicatorEl);
+        console.error(err);
+      }
+    }
+  }
+});
 
 vibeButtons.forEach((btn) => {
   btn.addEventListener("click", () => {
