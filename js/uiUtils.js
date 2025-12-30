@@ -53,10 +53,22 @@ export function setUIState(container, state) {
   }
 }
 
-export function initModal() {
+export function initModal(onCloseCallback) {
   const modal = document.getElementById("personalization-modal");
   const cta = document.getElementById("personalization-cta");
   const closeBtn = document.getElementById("modal-close-btn");
+  const tempSlider = document.getElementById("temp-sensitivity");
+  const tempValueSpan = document.getElementById("temp-sense-value");
+
+  const sensitivityMap = {
+    "-1": "Feel Cold Easily",
+    "0": "Balanced",
+    "1": "Feel Warm Easily",
+  };
+
+  function updateTempSliderLabel() {
+    tempValueSpan.textContent = sensitivityMap[tempSlider.value];
+  }
 
   function openModal() {
     modal.style.display = "flex";
@@ -64,6 +76,17 @@ export function initModal() {
 
   function closeModal() {
     modal.style.display = "none";
+    if (onCloseCallback) {
+      const form = document.getElementById("personalization-form");
+      const preferences = {
+        favColors: form.elements["fav-colors"].value,
+        neverWear: form.elements["never-wear"].value,
+        tempSensitivity: tempSlider.value,
+        activityLevel: form.elements["activity-level"].value,
+        commuteType: form.elements["commute-type"].value,
+      };
+      onCloseCallback(preferences);
+    }
   }
 
   cta.addEventListener("click", openModal);
@@ -73,4 +96,8 @@ export function initModal() {
       closeModal();
     }
   });
+  tempSlider.addEventListener("input", updateTempSliderLabel);
+
+  // Set initial slider label
+  updateTempSliderLabel();
 }

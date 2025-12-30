@@ -14,7 +14,7 @@
       <aside class="app-sidebar">
         <div class="logo-area">WS.ai</div>
         <nav class="vibe-nav">
-          <button class="vibe-btn" data-vibe="minimal">Minimal</button>
+          <button class="vibe-btn active" data-vibe="minimal">Minimal</button>
           <button class="vibe-btn" data-vibe="business">Business</button>
           <button class="vibe-btn" data-vibe="street">Street</button>
         </nav>
@@ -94,15 +94,59 @@
       </section>
     </div>
 
-    <div
-      id="personalization-modal"
-      class="modal-container"
-      style="display: none"
-    >
+    <div id="personalization-modal" class="modal-container" style="display: none">
       <div class="modal-content">
         <button id="modal-close-btn" class="modal-close-btn">&times;</button>
-        <h2>Personalization</h2>
-        <p>Here you can set your preferences.</p>
+        <h2>Personalize Your Style</h2>
+        <p>Teach the AI your preferences for better, more personal advice.</p>
+        <form id="personalization-form" class="personalization-form">
+          <div class="form-group">
+            <label for="fav-colors">Favorite Colors</label>
+            <input
+              type="text"
+              id="fav-colors"
+              placeholder="e.g., navy, beige, forest green"
+            />
+          </div>
+          <div class="form-group">
+            <label for="never-wear">Never Wear</label>
+            <input
+              type="text"
+              id="never-wear"
+              placeholder="e.g., hats, scarves, yellow"
+            />
+          </div>
+          <div class="form-group">
+            <label for="temp-sensitivity"
+              >Temperature Sensitivity: <span id="temp-sense-value">Balanced</span></label
+            >
+            <input
+              type="range"
+              id="temp-sensitivity"
+              min="-1"
+              max="1"
+              step="1"
+              value="0"
+            />
+          </div>
+          <div class="form-group">
+            <label for="activity-level">Primary Activity Today</label>
+            <select id="activity-level">
+              <option value="mostly_indoors">Mostly Indoors</option>
+              <option value="office_commute">Office & Commute</option>
+              <option value="active_outdoors">Active / Outdoors</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="commute-type">Primary Commute</label>
+            <select id="commute-type">
+              <option value="driving">Driving</option>
+              <option value="walking">Walking</option>
+              <option value="public_transit">Public Transit</option>
+              <option value="biking">Biking</option>
+            </select>
+          </div>
+        </form>
       </div>
     </div>
 

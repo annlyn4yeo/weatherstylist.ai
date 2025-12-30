@@ -24,6 +24,7 @@ const cityInputElement = document.getElementById("city-input");
 
 let activeVibe = "minimal"; // Default vibe
 let currentWeather = null;
+let userPreferences = {};
 
 // --- Event Listeners ---
 cityInputElement.addEventListener("keydown", async (event) => {
@@ -53,7 +54,7 @@ vibeButtons.forEach((btn) => {
     activeVibe = btn.dataset.vibe;
     vibeButtons.forEach((b) => b.classList.remove("active"));
     btn.classList.add("active");
-    getAIAdvice();
+    getAIAdvice(userPreferences);
   });
 });
 
@@ -61,13 +62,14 @@ refreshIndicatorEl.addEventListener("click", () => {
   if (!currentWeather) return;
   // Force a refresh by removing the cached entry for this specific state
   const adjustedTemp = Math.round(currentWeather.current.main.temp);
-  const cacheKey = `ai-style-${currentWeather.city}-${adjustedTemp}-${activeVibe}`;
+  const prefsString = JSON.stringify(userPreferences);
+  const cacheKey = `ai-style-${currentWeather.city}-${adjustedTemp}-${activeVibe}-${prefsString}`;
   sessionStorage.removeItem(cacheKey);
 
-  getAIAdvice();
+  getAIAdvice(userPreferences);
 });
 
-async function getAIAdvice(tempAdjustment = 0) {
+async function getAIAdvice(preferences, tempAdjustment = 0) {
   if (!currentWeather) return;
 
   // Show loading state while AI is thinking
@@ -76,7 +78,8 @@ async function getAIAdvice(tempAdjustment = 0) {
   const adjustedTemp =
     Math.round(currentWeather.current.main.temp) + tempAdjustment;
 
-  const cacheKey = `ai-style-${currentWeather.city}-${adjustedTemp}-${activeVibe}`;
+  const prefsString = JSON.stringify(preferences);
+  const cacheKey = `ai-style-${currentWeather.city}-${adjustedTemp}-${activeVibe}-${prefsString}`;
   const cachedAdvice = sessionStorage.getItem(cacheKey);
   let adviceToDisplay = "";
 
@@ -88,6 +91,7 @@ async function getAIAdvice(tempAdjustment = 0) {
       adviceToDisplay = await askGemini(
         currentWeather,
         activeVibe,
+        preferences,
         tempAdjustment
       );
       sessionStorage.setItem(cacheKey, adviceToDisplay);
@@ -168,4 +172,7 @@ async function init() {
 
 // --- Run Application ---
 init();
-initModal();
+initModal((preferences) => {
+  userPreferences = preferences;
+  getAIAdvice(userPreferences);
+});
