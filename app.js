@@ -6,6 +6,7 @@ import {
   setErrorState,
   setRefreshIndicatorEmoji,
   setUIState,
+  initModal,
 } from "./js/uiUtils.js";
 
 // --- DOM Elements ---
@@ -167,3 +168,4 @@ async function init() {
 
 // --- Run Application ---
 init();
+initModal();
